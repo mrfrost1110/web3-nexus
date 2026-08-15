@@ -13,7 +13,7 @@
 import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowRight, Sparkles, Shield, Award, HelpCircle } from "lucide-react";
+import { ArrowRight, Sparkles, Shield, Award, Wallet, Landmark, Zap, FileCode } from "lucide-react";
 
 /**
  * The Three.js scene, loaded on the client only.
@@ -46,6 +46,51 @@ const WebGLCanvas = dynamic(() => import("@/components/WebGLCanvas"), {
     </div>
   ),
 });
+
+/**
+ * The four concepts explained in the primer section, in reading order.
+ *
+ * Held as data rather than repeated markup so the card shell is written once — the four
+ * blocks previously differed only in their icon, accent, and copy.
+ *
+ * Each `tint` is its `color` at low alpha, used as the icon chip's background. They are
+ * written literally rather than derived from the CSS custom properties because those
+ * tokens are hex, and `rgba()` cannot take a hex variable.
+ */
+const EDUCATION_TOPICS = [
+  {
+    step: 1,
+    title: "What is a Wallet?",
+    body:
+      "A wallet is your identity. It contains a private key (your secret password) and public key (your address). It doesn't store coins; it unlocks your ownership on the public ledger.",
+    accent: { color: "var(--neon-cyan)", tint: "rgba(6, 182, 212, 0.12)" },
+    Icon: Wallet,
+  },
+  {
+    step: 2,
+    title: "What is Staking?",
+    body:
+      "Staking is locking your assets (ETH) into a smart contract to support a network mechanism. In return, you are minted utility tokens (NEX) as rewards relative to the duration of your lock.",
+    accent: { color: "var(--neon-purple)", tint: "rgba(168, 85, 247, 0.12)" },
+    Icon: Landmark,
+  },
+  {
+    step: 3,
+    title: "What is Gas?",
+    body:
+      'Every calculation on a decentralized computer takes electric power. "Gas" is the micro-payment (in Gwei/ETH) you pay to validators to execute and append your transaction to the ledger.',
+    accent: { color: "var(--neon-pink)", tint: "rgba(236, 72, 153, 0.12)" },
+    Icon: Zap,
+  },
+  {
+    step: 4,
+    title: "What is a Contract?",
+    body:
+      "A Smart Contract is a self-executing, immutable program running on-chain. It functions exactly as written (e.g., our Staking math) without relying on any intermediary bank or database.",
+    accent: { color: "var(--success)", tint: "rgba(16, 185, 129, 0.12)" },
+    Icon: FileCode,
+  },
+] as const;
 
 export default function LandingPage() {
   return (
@@ -144,37 +189,33 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "24px" }}>
-          <div className="glass-card" style={{ borderLeft: "3px solid var(--neon-cyan)" }}>
-            <HelpCircle size={24} style={{ color: "var(--neon-cyan)", marginBottom: "12px" }} />
-            <h4 style={{ fontWeight: 700, marginBottom: "8px" }}>1. What is a Wallet?</h4>
-            <p style={{ color: "var(--text-secondary)", fontSize: "13px", lineHeight: "1.6" }}>
-              A wallet is your identity. It contains a private key (your secret password) and public key (your address). It doesn't store coins; it unlocks your ownership on the public ledger.
-            </p>
-          </div>
-
-          <div className="glass-card" style={{ borderLeft: "3px solid var(--neon-purple)" }}>
-            <HelpCircle size={24} style={{ color: "var(--neon-purple)", marginBottom: "12px" }} />
-            <h4 style={{ fontWeight: 700, marginBottom: "8px" }}>2. What is Staking?</h4>
-            <p style={{ color: "var(--text-secondary)", fontSize: "13px", lineHeight: "1.6" }}>
-              Staking is locking your assets (ETH) into a smart contract to support a network mechanism. In return, you are minted utility tokens (NEX) as rewards relative to the duration of your lock.
-            </p>
-          </div>
-
-          <div className="glass-card" style={{ borderLeft: "3px solid var(--neon-pink)" }}>
-            <HelpCircle size={24} style={{ color: "var(--neon-pink)", marginBottom: "12px" }} />
-            <h4 style={{ fontWeight: 700, marginBottom: "8px" }}>3. What is Gas?</h4>
-            <p style={{ color: "var(--text-secondary)", fontSize: "13px", lineHeight: "1.6" }}>
-              Every calculation on a decentralized computer takes electric power. "Gas" is the micro-payment (in Gwei/ETH) you pay to validators to execute and append your transaction to the ledger.
-            </p>
-          </div>
-
-          <div className="glass-card" style={{ borderLeft: "3px solid var(--success)" }}>
-            <HelpCircle size={24} style={{ color: "var(--success)", marginBottom: "12px" }} />
-            <h4 style={{ fontWeight: 700, marginBottom: "8px" }}>4. What is a Contract?</h4>
-            <p style={{ color: "var(--text-secondary)", fontSize: "13px", lineHeight: "1.6" }}>
-              A Smart Contract is a self-executing, immutable program running on-chain. It functions exactly as written (e.g., our Staking math) without relying on any intermediary bank or database.
-            </p>
-          </div>
+          {EDUCATION_TOPICS.map(({ step, title, body, accent, Icon }) => (
+            <div key={step} className="glass-card">
+              {/* Accent lives in the icon's tinted chip, matching the stat cards on the
+                  dashboard. Each topic gets its own icon so the four cards are told apart
+                  by subject rather than by color alone. */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  padding: "10px",
+                  borderRadius: "12px",
+                  background: accent.tint,
+                  marginBottom: "16px",
+                }}
+              >
+                <Icon size={22} style={{ color: accent.color }} />
+              </div>
+              <h4 style={{ fontWeight: 700, marginBottom: "8px" }}>
+                {/* The step number is reading order for a beginner, not decoration — the
+                    grid reflows, so the sequence has to be stated rather than implied. */}
+                <span style={{ color: "var(--text-muted)", marginRight: "6px" }}>{step}.</span>
+                {title}
+              </h4>
+              <p style={{ color: "var(--text-secondary)", fontSize: "13px", lineHeight: "1.6" }}>
+                {body}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
