@@ -1,0 +1,21 @@
+{
+  "name": "web3-advanced-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "contracts:compile": "bun --cwd packages/contracts compile",
+    "contracts:test": "bun --cwd packages/contracts test",
+    "contracts:node": "bun --cwd packages/contracts node",
+    "contracts:deploy": "bun --cwd packages/contracts run deploy",
+    "frontend:dev": "bun --cwd packages/frontend dev",
+    "frontend:build": "bun --cwd packages/frontend build",
+    "frontend:start": "bun --cwd packages/frontend start",
+    "dev": "bun --cwd packages/frontend dev"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^6.0.0"
+  }
+}
